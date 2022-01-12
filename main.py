@@ -4,6 +4,7 @@
 ##########################
 
 
+from typing import Tuple
 import util
 import constant as c
 import time
@@ -24,6 +25,7 @@ EXIT = False #用来传递退出的参数
 user32 = ctypes.windll.user32  #加载user32.dll
 id1=105 #注册热键的唯一id，用来区分热键
 id2=106
+id3=107
 
 ### 脚本运行标识
 PLAY=False
@@ -37,8 +39,10 @@ class Hotkey(threading.Thread):  #创建一个Thread.threading的扩展类
         if not user32.RegisterHotKey(None, id1, 0, win32con.VK_F9):   # 注册快捷键F9并判断是否成功，该热键用于执行一次需要执行的内容。  
             print ("Unable to register id"), id1 # 返回一个错误信息
 
-        if not user32.RegisterHotKey(None, id2, 0, win32con.VK_F10):   # 注册快捷键F10并判断是否成功，该热键用于结束程序，且最好这么结束，否则影响下一次注册热键。  
+        if not user32.RegisterHotKey(None, id2, 0, win32con.VK_F10):   # 注册快捷键F10并判断是否成功，该热键用于暫停程序，且最好这么结束，否则影响下一次注册热键。  
             print ("Unable to register id"), id2
+        if not user32.RegisterHotKey(None, id3, 0, win32con.VK_F11):   # 注册快捷键F10并判断是否成功，该热键用于结束程序，且最好这么结束，否则影响下一次注册热键。  
+            print ("Unable to register id"), id3    
 
         #以下为检测热键是否被按下，并在最后释放快捷键  
         try:  
@@ -54,9 +58,12 @@ class Hotkey(threading.Thread):  #创建一个Thread.threading的扩展类
                             EXIT=False
                         elif msg.wParam == id2:
                             print('暂停')
-                            EXIT=True
                             RUN=False
-                            return
+                        elif msg.wParam == id3:
+                            print('退出')
+                            EXIT=True
+                            return    
+
 
                     user32.TranslateMessage(ctypes.byref(msg))  
                     user32.DispatchMessageA(ctypes.byref(msg))
@@ -65,6 +72,7 @@ class Hotkey(threading.Thread):  #创建一个Thread.threading的扩展类
             user32.UnregisterHotKey(None, id1)#必须得释放热键，否则下次就会注册失败，所以当程序异常退出，没有释放热键，
                                               #那么下次很可能就没办法注册成功了，这时可以换一个热键测试
             user32.UnregisterHotKey(None, id2)
+            user32.UnregisterHotKey(None, id3)
 
 
 hotkey = Hotkey()  
@@ -138,16 +146,34 @@ def hot_run():
     while(True):
         time.sleep(1)
         if RUN==True:
-            if PLAY==False:
-                auto_play()
-
-            RUN=False
-
+            auto_play()
         elif EXIT==True:
             #这里是用于退出循环的
-            print('已暂停,F9启动')
-            # return        
+            return      
 
+
+### 龙神
+def longshen_run():
+    global RUN
+    global EXIT
+    global PLAY
+    print("运行1")
+    auto.open_driver()
+    time.sleep(2)
+    i = 0
+    auto.default_key()
+    print("F9启动,F10暂停")
+    while(True):
+        time.sleep(1)
+        if RUN==True:
+            play_time = '运行第' + str(i) + '次'
+            print(play_time)
+            auto.auto_q_s()
+            time.sleep(1)
+            i = i + 1
+        elif EXIT==True:
+            #这里是用于退出循环的
+            return
 
 
 parser = argparse.ArgumentParser()
@@ -172,4 +198,5 @@ args = parser.parse_args()
 # dm.base()
 # liandian()
 # auto_play()
-hot_run()
+# hot_run()
+longshen_run()

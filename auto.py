@@ -117,6 +117,31 @@ def auto_right():
     km._key_up("right_arrow")
     time.sleep(0.15 + random_num(0.05))
 
+### 龙神Qs
+def auto_q_s():
+    print('攻击')
+    km._key_down('right_arrow')
+    time.sleep(0.05)
+    km._key_up("right_arrow")
+    km._key_down('left_arrow')
+    time.sleep(0.05)
+    km._key_up("left_arrow")
+    km._key_down("q")
+    time.sleep(random_num(0.05))
+    km._key_up("q")
+    time.sleep(random_num(0.05))
+    km._key_down("s")
+    time.sleep(random_num(0.05))
+    km._key_up("s")
+    time.sleep(3 + random_num(0.05))
+    km._key_down("w")
+    time.sleep(random_num(0.05))
+    km._key_up("w")
+    time.sleep(random_num(0.05))
+    km._key_down("d")
+    time.sleep(random_num(0.05))
+    km._key_up("d")
+
 ### 自动刷图 pyautogui
 # def auto_a2():
 #     pyautogui.keyDown('a')
